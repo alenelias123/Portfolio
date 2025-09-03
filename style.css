@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: white;
+  color: #111;
+}
+
+/* Loading Page */
+#loading {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.scrolling-name {
+  position: absolute;
+  font-size: 5rem;
+  color: rgba(0,0,0,0.05);
+  animation: scrollText 20s linear infinite;
+}
+@keyframes scrollText {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Projects */
+.project-screen {
+  border: 8px solid #000;
+  border-radius: 10px;
+  margin: 2rem auto;
+  max-width: 600px;
+  padding: 1rem;
+  text-align: center;
+}
+.project-screen img {
+  width: 100%;
+  border-radius: 6px;
+}
