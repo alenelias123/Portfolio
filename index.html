@@ -5,25 +5,28 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Portfolio - Alen Elias</title>
         <link rel="stylesheet" href="style.css">
+        <style>
+          html { scroll-behavior: smooth; }
+        </style>
     </head>
 
-<body>
-    <section id="loading">
-        <div class="scrolling-name">Alen Elias</div>
-        <canvas id="avatar"></canvas>
+<body data-cv-url="">
+    <header class="topbar">
+      <nav class="main-nav">
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact Me</a>
+        <button class="cv-btn" type="button">Download CV</button>
+      </nav>
+    </header>
+    <section id="loading" aria-label="Intro">
+        <div class="scrolling-name" aria-hidden="true">Alen Elias</div>
+        <canvas id="avatar" aria-label="3D Avatar" role="img"></canvas>
     </section>
 
     <section id="about">
-        <header>
-            <nav>
-                <a href="#projects">Projects</a>
-                <a href="#skills">Skills</a>
-                <a href="#contact">Contact Me</a>
-                <button class="cv-btn">Download CV</button>
-            </nav>
-        </header>
         <div class="about-content">
-            <div class="avatar-side"><img src="assets/avatar.png" alt="avatar"></div>
+            <div class="avatar-side"><!-- Optional static avatar image fallback --></div>
             <div class="bio-side">
                 <h2>Hello, I'm Alen Elias</h2>
                 <p>I'm a Full Stack Developer with a passion for creating interactive web applications.</p>
@@ -41,33 +44,51 @@
 
     <section id="projects">
         <h2>Projects</h2>
-        <div class="project-screen">
-            <img src="assets/project1.png" alt="Project 1">
-            <button type="button">View Project</button>
-        </div>
-         <div class="project-screen">
-            <img src="assets/project1.png" alt="Project 1">
-            <button type="button">View Project</button>
+        <div class="project-grid">
+          <article class="project-card" data-tags="react,web" id="proj-externus3">
+            <div class="project-screen monitor-frame">
+              <div class="screen-inner">
+                <h3 class="project-title">Externus3</h3>
+                <div class="project-actions">
+                  <a class="system-button" href="projects/externus3.html">View Project</a>
+                  <a class="system-button outline" href="https://github.com/alenelias123/externus3" target="_blank" rel="noopener">GitHub</a>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="project-card" data-tags="flutter,web" id="proj-onlyu">
+            <div class="project-screen monitor-frame">
+              <div class="screen-inner">
+                <h3 class="project-title">OnlyU</h3>
+                <div class="project-actions">
+                  <a class="system-button" href="projects/onlyu.html">View Project</a>
+                  <a class="system-button outline" href="https://github.com/aby-20/OnlyU" target="_blank" rel="noopener">GitHub</a>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
     </section> 
 
     <section id="skills">
         <h2>I am a <span id="typewriter"></span></h2>
         <div class="skills-grid">
-      <div class="skill-box">React</div>
-      <div class="skill-box">Python</div>
-      <div class="skill-box">Flutter</div>
+          <button class="skill-chip" data-filter="react" type="button">React</button>
+          <button class="skill-chip" data-filter="flutter" type="button">Flutter</button>
+          <button class="skill-chip" data-filter="python" type="button">Python</button>
+          <button class="skill-chip" data-filter="web" type="button">Web</button>
         </div>
     </section>
 
 
     <section id="contact">
     <h2>Contact Me</h2>
-    <form>
-      <input type="text" placeholder="Your Name">
-      <input type="email" placeholder="Your Email">
-      <textarea placeholder="Your Message"></textarea>
-      <button type="submit">Send</button>
+    <form id="contact-form" novalidate>
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <textarea name="message" placeholder="Your Message" required></textarea>
+      <button type="submit" class="system-button">Send</button>
+      <p class="form-status" role="status" aria-live="polite"></p>
     </form>
   </section>
 
@@ -79,6 +100,7 @@
       <a href="#">Instagram</a>
     </div>
   </footer>
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
