@@ -77,6 +77,63 @@
   document.querySelectorAll('.fade-in, #projects, #skills, #contact').forEach(el=>{
     el.classList.add('fade-in'); io.observe(el);
   });
+  const topbar = document.querySelector('.topbar');
+  const about = document.getElementById('about');
+  if (topbar && about) {
+    const showHdr = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{ if (en.isIntersecting) topbar.classList.add('visible'); });
+    }, { threshold: 0.2 });
+    showHdr.observe(about);
+  }
+})();
+
+// Scroll-down from intro with subtle fade
+(function(){
+  const btn = document.querySelector('#loading .scroll-down');
+  const loading = document.getElementById('loading');
+  const about = document.getElementById('about');
+  if (btn && loading && about) {
+    btn.addEventListener('click', ()=>{
+      loading.classList.add('exited');
+      about.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(()=> loading.classList.remove('exited'), 700);
+    });
+  }
+})();
+
+// 3D vector on home (about)
+(function(){
+  if (!(window.THREE && document.getElementById('vector3d'))) return;
+  const canvas = document.getElementById('vector3d');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  camera.position.z = 6;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  function resize(){
+    const rect = canvas.getBoundingClientRect();
+    const size = Math.min(rect.width || 400, 420);
+    renderer.setSize(size, size, false);
+    camera.aspect = 1; camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', resize); resize();
+  const light = new THREE.DirectionalLight(0xffffff, 1); light.position.set(3,4,5); scene.add(light);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  const geo = new THREE.TorusKnotGeometry(1.2, 0.35, 200, 32);
+  const mat = new THREE.MeshStandardMaterial({ color: 0x6a5acd, metalness: 0.35, roughness: 0.25 });
+  const mesh = new THREE.Mesh(geo, mat); scene.add(mesh);
+  let targetX = 0, targetY = 0;
+  window.addEventListener('mousemove', (e)=>{
+    const x = (e.clientX / window.innerWidth) * 2 - 1;
+    const y = (e.clientY / window.innerHeight) * 2 - 1;
+    targetY = x * 0.25; targetX = -y * 0.2;
+  });
+  function animate(){
+    mesh.rotation.x += 0.004 + (targetX - mesh.rotation.x) * 0.02;
+    mesh.rotation.y += 0.007 + (targetY - mesh.rotation.y) * 0.02;
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  }
+  animate();
 })();
 
 // Skills filtering (dim non-matching)
