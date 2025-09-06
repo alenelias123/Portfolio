@@ -109,27 +109,76 @@
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   camera.position.z = 6;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+
   function resize(){
     const rect = canvas.getBoundingClientRect();
     const size = Math.min(rect.width || 400, 420);
     renderer.setSize(size, size, false);
-    camera.aspect = 1; camera.updateProjectionMatrix();
+    camera.aspect = 1;
+    camera.updateProjectionMatrix();
   }
   window.addEventListener('resize', resize); resize();
+
   const light = new THREE.DirectionalLight(0xffffff, 1); light.position.set(3,4,5); scene.add(light);
-  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-  const geo = new THREE.TorusKnotGeometry(1.2, 0.35, 200, 32);
-  const mat = new THREE.MeshStandardMaterial({ color: 0x6a5acd, metalness: 0.35, roughness: 0.25 });
-  const mesh = new THREE.Mesh(geo, mat); scene.add(mesh);
-  let targetX = 0, targetY = 0;
-  window.addEventListener('mousemove', (e)=>{
-    const x = (e.clientX / window.innerWidth) * 2 - 1;
-    const y = (e.clientY / window.innerHeight) * 2 - 1;
-    targetY = x * 0.25; targetX = -y * 0.2;
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+  let root = null;
+  const url = "https://cdn.builder.io/o/assets%2F46d439807ce146dfa87c3e06c032c776%2F462503d91900447ca25b1309cfe80765?alt=media&token=6b18219c-8651-4eda-83f1-3312726f89c3&apiKey=46d439807ce146dfa87c3e06c032c776";
+
+  function fitToView(object) {
+    const box = new THREE.Box3().setFromObject(object);
+    const size = new THREE.Vector3(); box.getSize(size);
+    const center = new THREE.Vector3(); box.getCenter(center);
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const fov = camera.fov * (Math.PI/180);
+    const dist = Math.max(3, (maxDim/2) / Math.tan(fov/2));
+    camera.position.z = dist;
+    object.position.sub(center);
+  }
+
+  if (THREE.GLTFLoader) {
+    const loader = new THREE.GLTFLoader();
+    loader.load(url, (gltf)=>{
+      root = gltf.scene;
+      scene.add(root);
+      fitToView(root);
+    });
+  } else {
+    const fallback = new THREE.Mesh(
+      new THREE.TorusKnotGeometry(1.2, 0.35, 200, 32),
+      new THREE.MeshStandardMaterial({ color: 0x6a5acd, metalness: 0.35, roughness: 0.25 })
+    );
+    root = fallback; scene.add(root);
+  }
+
+  let isDown = false, lastX = 0, lastY = 0, velX = 0, velY = 0;
+  let targetScale = 1, currScale = 1;
+  canvas.addEventListener('pointerdown', (e)=>{ isDown = true; lastX = e.clientX; lastY = e.clientY; canvas.setPointerCapture(e.pointerId); });
+  window.addEventListener('pointerup', ()=>{ isDown = false; });
+  window.addEventListener('pointermove', (e)=>{
+    targetScale = 1.03;
+    if (!isDown || !root) return;
+    const dx = (e.clientX - lastX) / 200;
+    const dy = (e.clientY - lastY) / 200;
+    velY = dx; velX = dy;
+    lastX = e.clientX; lastY = e.clientY;
   });
+  canvas.addEventListener('mouseleave', ()=>{ targetScale = 1; });
+
+  canvas.addEventListener('wheel', (e)=>{
+    e.preventDefault();
+    camera.position.z = Math.min(12, Math.max(3, camera.position.z + (e.deltaY > 0 ? 0.5 : -0.5)));
+  }, { passive: false });
+
   function animate(){
-    mesh.rotation.x += 0.004 + (targetX - mesh.rotation.x) * 0.02;
-    mesh.rotation.y += 0.007 + (targetY - mesh.rotation.y) * 0.02;
+    if (root) {
+      root.rotation.x += velX * 0.8 + 0.004;
+      root.rotation.y += velY * 0.8 + 0.007;
+      velX *= 0.92; velY *= 0.92;
+      currScale += (targetScale - currScale) * 0.1;
+      root.scale.set(currScale, currScale, currScale);
+      targetScale = 1;
+    }
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   }
