@@ -87,18 +87,41 @@
   }
 })();
 
-// Scroll-down from intro with subtle fade
+// Wheel/touch to enter home from loading + set class for layout shift
 (function(){
-  const btn = document.querySelector('#loading .scroll-down');
   const loading = document.getElementById('loading');
   const about = document.getElementById('about');
-  if (btn && loading && about) {
-    btn.addEventListener('click', ()=>{
-      loading.classList.add('exited');
-      about.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setTimeout(()=> loading.classList.remove('exited'), 700);
-    });
+  if (!loading || !about) return;
+  let triggered = false;
+  function go(){
+    if (triggered) return; triggered = true;
+    document.body.classList.add('entered-home');
+    loading.classList.add('exited');
+    about.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(()=> loading.classList.remove('exited'), 700);
   }
+  loading.addEventListener('wheel', (e)=>{ if (e.deltaY > 0) go(); }, { passive: true });
+  loading.addEventListener('touchstart', (e)=>{ loading.dataset.y = e.touches[0].clientY; }, { passive: true });
+  loading.addEventListener('touchmove', (e)=>{ const y0 = Number(loading.dataset.y||0); if (e.touches[0].clientY < y0 - 12) go(); }, { passive: true });
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{ if (!en.isIntersecting) document.body.classList.add('entered-home'); });
+  }, { threshold: 0.6 });
+  io.observe(loading);
+})();
+
+// Nav button smooth scroll + section slide bump
+(function(){
+  document.querySelectorAll('.main-nav a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      target.classList.add('section-bump');
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(()=> target.classList.remove('section-bump'), 650);
+    });
+  });
 })();
 
 // 3D vector on home (about)
@@ -197,17 +220,17 @@
       const y = (e.clientY - rect.top) / rect.height;
       const rx = (0.5 - y) * maxDeg;
       const ry = (x - 0.5) * maxDeg;
-      el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${scale})`;
+      el.style.transform = `translateX(var(--shiftX, 0)) perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${scale})`;
     }
     el.addEventListener('pointermove', (e)=>{ scale = 1.03; apply(e); });
-    el.addEventListener('pointerleave', ()=>{ scale = 1; el.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)'; });
+    el.addEventListener('pointerleave', ()=>{ scale = 1; el.style.transform = 'translateX(var(--shiftX, 0)) perspective(800px) rotateX(0) rotateY(0) scale(1)'; });
     el.addEventListener('pointerdown', ()=>{ scale = 0.98; });
     window.addEventListener('pointerup', ()=>{ scale = 1.03; });
     let t = 0; (function idle(){
       if (!document.body.contains(el)) return;
       if (!el.matches(':hover')) {
         t += 0.02; const rx = Math.sin(t)*1.5, ry = Math.cos(t*0.8)*1.5;
-        el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1)`;
+        el.style.transform = `translateX(var(--shiftX, 0)) perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1)`;
       }
       requestAnimationFrame(idle);
     })();
