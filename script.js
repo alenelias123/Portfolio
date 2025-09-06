@@ -185,6 +185,37 @@
   animate();
 })();
 
+// Interactive tilt for PNG model images (avatar + vector)
+(function(){
+  function addTilt(el){
+    if (!el) return;
+    let scale = 1;
+    const maxDeg = 12;
+    function apply(e){
+      const rect = el.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      const rx = (0.5 - y) * maxDeg;
+      const ry = (x - 0.5) * maxDeg;
+      el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${scale})`;
+    }
+    el.addEventListener('pointermove', (e)=>{ scale = 1.03; apply(e); });
+    el.addEventListener('pointerleave', ()=>{ scale = 1; el.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)'; });
+    el.addEventListener('pointerdown', ()=>{ scale = 0.98; });
+    window.addEventListener('pointerup', ()=>{ scale = 1.03; });
+    let t = 0; (function idle(){
+      if (!document.body.contains(el)) return;
+      if (!el.matches(':hover')) {
+        t += 0.02; const rx = Math.sin(t)*1.5, ry = Math.cos(t*0.8)*1.5;
+        el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1)`;
+      }
+      requestAnimationFrame(idle);
+    })();
+  }
+  addTilt(document.getElementById('avatar'));
+  addTilt(document.getElementById('vector3d'));
+})();
+
 // Skills filtering (dim non-matching)
 (function(){
   const chips = Array.from(document.querySelectorAll('.skill-chip'));
