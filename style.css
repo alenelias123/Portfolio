@@ -62,7 +62,7 @@ body {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
-#avatar { width: min(80vmin, 640px); height: min(80vmin, 640px); display: block; position: relative; font-family: Helvetica, sans-serif; z-index: 1; }
+#avatar { width: min(80vmin, 640px); aspect-ratio: 1 / 1; height: auto; display: block; position: relative; z-index: 1; object-fit: contain; }
 .scroll-down {
   position: absolute;
   bottom: 24px;
@@ -75,6 +75,9 @@ body {
   background: #fff;
 }
 #loading.exited { opacity: 0; transition: opacity 500ms ease; }
+
+.tilt-target { will-change: transform; transition: transform 200ms ease, box-shadow 200ms ease; transform-style: preserve-3d; }
+#vector3d { width: 100%; max-width: 420px; aspect-ratio: 1 / 1; height: auto; display: block; margin: 0 auto; object-fit: contain; }
 
 /* About */
 #about { padding: 3rem 1rem; }
