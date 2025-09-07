@@ -98,7 +98,7 @@
     document.body.classList.add('entered-home');
     loading.classList.add('exited');
     about.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setTimeout(()=> loading.classList.remove('exited'), 700);
+    setTimeout(()=> loading.classList.remove('exited'), 1700);
   }
   loading.addEventListener('wheel', (e)=>{ if (e.deltaY > 0) go(); }, { passive: true });
   loading.addEventListener('touchstart', (e)=>{ loading.dataset.y = e.touches[0].clientY; }, { passive: true });
