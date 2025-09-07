@@ -139,6 +139,7 @@ body.entered-home .avatar-side { justify-content: flex-start; }
 .screen-inner { padding: 1rem; }
 .project-title { margin: 0 0 0.75rem; }
 .project-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.project-brief { margin: 0.5rem 0 0.75rem; opacity: 0.9; }
 
 .system-button {
   display: inline-block;
