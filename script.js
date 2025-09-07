@@ -92,13 +92,16 @@
   const loading = document.getElementById('loading');
   const about = document.getElementById('about');
   if (!loading || !about) return;
+  if (sessionStorage.getItem('introSeen') === '1') { document.body.classList.add('entered-home'); loading.remove(); return; }
   let triggered = false;
   function go(){
     if (triggered) return; triggered = true;
+    sessionStorage.setItem('introSeen','1');
+    document.documentElement.classList.add('intro-seen');
     document.body.classList.add('entered-home');
     loading.classList.add('exited');
     about.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setTimeout(()=> loading.classList.remove('exited'), 700);
+    setTimeout(()=> { if (loading && loading.parentNode) loading.remove(); }, 1700);
   }
   loading.addEventListener('wheel', (e)=>{ if (e.deltaY > 0) go(); }, { passive: true });
   loading.addEventListener('touchstart', (e)=>{ loading.dataset.y = e.touches[0].clientY; }, { passive: true });
