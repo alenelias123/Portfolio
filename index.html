@@ -9,6 +9,9 @@
         <style>
           html { scroll-behavior: smooth; }
         </style>
+        <script>
+          try { if (sessionStorage.getItem('introSeen') === '1') { document.documentElement.classList.add('intro-seen'); } } catch (e) {}
+        </script>
     </head>
 
 <body data-cv-url="">
