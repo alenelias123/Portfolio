@@ -280,7 +280,10 @@
     e.preventDefault();
     const GOOGLE_FORM_URL = window.GOOGLE_FORM_URL || '';
     if (!GOOGLE_FORM_URL) { status.textContent = 'Form backend not configured.'; return; }
-    const fd = new FormData(form);
+    const fd = new FormData();
+    fd.append('entry.1435239664', form.elements['name']?.value || '');
+    fd.append('entry.1477657095', form.elements['email']?.value || '');
+    fd.append('entry.2053526753', form.elements['message']?.value || '');
     try {
       const res = await fetch(GOOGLE_FORM_URL, { method: 'POST', mode: 'no-cors', body: fd });
       status.textContent = 'Thanks! Your message was sent.';
