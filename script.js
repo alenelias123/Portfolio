@@ -268,7 +268,15 @@
 (function(){
   const btn = document.querySelector('.cv-btn');
   const cvUrl = document.body.getAttribute('data-cv-url');
-  if (btn) btn.addEventListener('click', ()=>{ if (cvUrl) window.open(cvUrl, '_blank'); });
+  if (btn) btn.addEventListener('click', ()=>{
+    if (!cvUrl) return;
+    const a = document.createElement('a');
+    a.href = cvUrl;
+    a.download = 'Alen_Elias_CV.docx';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
 })();
 
 // Contact form → Google Forms
