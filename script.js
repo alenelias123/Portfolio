@@ -268,7 +268,15 @@
 (function(){
   const btn = document.querySelector('.cv-btn');
   const cvUrl = document.body.getAttribute('data-cv-url');
-  if (btn) btn.addEventListener('click', ()=>{ if (cvUrl) window.open(cvUrl, '_blank'); });
+  if (btn) btn.addEventListener('click', ()=>{
+    if (!cvUrl) return;
+    const a = document.createElement('a');
+    a.href = cvUrl;
+    a.download = 'Alen_Elias_CV.docx';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  });
 })();
 
 // Contact form → Google Forms
@@ -280,7 +288,10 @@
     e.preventDefault();
     const GOOGLE_FORM_URL = window.GOOGLE_FORM_URL || '';
     if (!GOOGLE_FORM_URL) { status.textContent = 'Form backend not configured.'; return; }
-    const fd = new FormData(form);
+    const fd = new FormData();
+    fd.append('entry.1435239664', form.elements['name']?.value || '');
+    fd.append('entry.1477657095', form.elements['email']?.value || '');
+    fd.append('entry.2053526753', form.elements['message']?.value || '');
     try {
       const res = await fetch(GOOGLE_FORM_URL, { method: 'POST', mode: 'no-cors', body: fd });
       status.textContent = 'Thanks! Your message was sent.';

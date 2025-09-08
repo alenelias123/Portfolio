@@ -48,12 +48,12 @@ body {
   align-items: center;
   position: relative;
   overflow: hidden;
-  background: radial-gradient(60% 60% at 50% 40%, rgba(106,90,205,0.25) 0%, rgba(0,0,0,0) 60%);
+  background: inherit;
 }
 .scrolling-name {
   position: absolute;
-  top: 401px;
-  color: rgba(0,0,0,0.05);
+  top: 6px; left: 200px;
+  color: rgba(255,255,255,0.05);
   font: 400 165px "Almendra SC", serif;
   animation: scrollText 20s linear infinite;
   white-space: nowrap;
@@ -63,7 +63,7 @@ body {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
-#avatar { width: 640px; aspect-ratio: 1 / 1; height: auto; display: block; position: relative; z-index: 1; object-fit: contain; transform-style: preserve-3d; transition: transform 0.2s ease, box-shadow 0.2s ease; will-change: transform; transform: matrix3d(1.00038, 0.000274708, -0.0242313, 0.0000302891, 0, 1.00061, 0.0113438, -0.0000141798, 0.0242165, -0.0113328, 0.999642, -0.00124955, 0, 0, 0, 1); }
+#avatar { width: 640px; aspect-ratio: 1 / 1; height: auto; display: block; position: relative; z-index: 1; object-fit: contain; transform-style: preserve-3d; transition: transform 0.2s ease, box-shadow 0.2s ease; will-change: transform; transform: matrix3d(1.00006, 0.000309474, 0.0140014, -1.75017e-05, 0, 0.999913, -0.0221012, 2.76264e-05, -0.0140026, 0.0220955, 0.999658, -0.00124957, 0, 0, 0, 1); }
 .scroll-down { display: none !important; }
 #loading.exited { opacity: 0; transition: opacity 1500ms ease; }
 html.intro-seen #loading { display: none !important; }
@@ -222,6 +222,7 @@ body.entered-home .avatar-side { justify-content: flex-start; }
 
 /* Contact */
 #contact { padding: 3rem 1rem; }
+#contact h2 { text-align: center; }
 #contact form { max-width: 640px; margin: 0 auto; display: grid; gap: 0.75rem; }
 #contact input, #contact textarea {
   padding: 0.75rem;
